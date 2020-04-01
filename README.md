@@ -36,6 +36,6 @@ Basically you just need to keep the format `  - [type],[content],[policy]` for e
 
 You may noticed that they're just the same as those when you try to add new Rule for your CFW profile
 
-> Just beaware that the more rules you add, the more system resource CFW will take
+> Just beaware that the more rules you add, the more system resource CFW will take.
 
 
