@@ -1,0 +1,16 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "args": [
+                "--config",
+                "/mnt/c/Users/PureAdmin/.config/clash/profiles/1585734791148.ymls"
+            ],
+            "console": "integratedTerminal"
+        }
+    ]
+}

@@ -1,0 +1,4 @@
+Rule:
+  - DOMAIN,i.imgur.com,Proxy
+  - DOMAIN-SUFFIX,live.net,Proxy
+  - DOMAIN-KEYWORD,kaggle,Proxy
