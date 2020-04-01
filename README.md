@@ -7,10 +7,12 @@ pyyaml, watchdog
 # How to use
 1. Modify the file `myconf.yml` in the repo cloned on your disk to **add customized rules**
 2. Duplicate your CFW (clash for windows) config by clicking "Duplicate Profile" button on your subscribed profile in the "Profiles" tab of Clash For Windows
+   
    ![Duplicate Config](dup_config.png)
 3. Click "Edit in text mode" button on the profile you just cloned and open it with your favorite text editor just to get its path. Of course you can directly go to `%userprofile%\.config\clash` to identify your customized profile by the created date or modified date
-   ![Edit Custom Config](edit_custom_config.png)
    
+   ![Edit Custom Config](edit_custom_config.png)
+
    ![Custom Config Path](custom_config_path.png)
 4. Run `python main.py --config <path to your customized profile>`
 5. Click "Update this profile" on your subscribed profile, and your customized profile will be updated at the same time
