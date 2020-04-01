@@ -16,6 +16,8 @@ pyyaml, watchdog
    ![Custom Config Path](custom_config_path.png)
 4. Run `python main.py --config <path to your customized profile>`
 5. Click "Update this profile" on your subscribed profile, and your customized profile will be updated at the same time
+
+   ![Update](update.png)
 6. Click and select your customized profile to make it effective
 
 # Customized Rule Format
