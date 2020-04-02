@@ -1,10 +1,35 @@
 # clash-for-win-self-rules-appender
-automatically append self-defined rules to a remote subscription, a workaroud for [#593](https://github.com/Fndroid/clash_for_windows_pkg/issues/593)
+automatically append self-defined rules to a remote subscription, a workaround for [#593](https://github.com/Fndroid/clash_for_windows_pkg/issues/593)
 
 # Dependencies
 pyyaml, watchdog
 
 # How to use
+
+```
+usage: main.py [-h] [-d] [-c CONFIG] [-p PROFILE_DIR]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -d, --direct          switch on to directly modify the subscribed config, if
+                        leave it off, you need to specify a custom config path
+                        to "--config"
+  -c CONFIG, --config CONFIG
+                        when "--direct" is not enabled, this file will be
+                        written, you can locate it by clicking 'Edit in Text
+                        Mode' on your CFW config
+  -p PROFILE_DIR, --profile-dir PROFILE_DIR
+                        directory for profiles, if empty, will try to extract
+                        from "--config", can also be useful if you're in
+                        Windows Subsystem Linux
+```
+
+## Option 1: Simple and Effective
+1. run `python main.py -d` and keep the terminal running
+2. update your subscription manually or automatically
+   > There could be error message from CFW saying it cannot apply the profile because it's empty, just ignore it and click to select the profile again
+
+## Option 2: If you want to keep hands clean
 1. Modify the file `myconf.yml` in the repo cloned on your disk to **add customized rules**
 2. Duplicate your CFW (clash for windows) config by clicking "Duplicate Profile" button on your subscribed profile in the "Profiles" tab of Clash For Windows
    
@@ -14,7 +39,7 @@ pyyaml, watchdog
    ![Edit Custom Config](edit_custom_config.png)
 
    ![Custom Config Path](custom_config_path.png)
-4. Run `python main.py --config <path to your customized profile>`
+4. Run `python main.py --config <path to your customized profile>` and keep the terminal running
 5. Click "Update this profile" on your subscribed profile, and your customized profile will be updated at the same time
 
    ![Update](update.png)
