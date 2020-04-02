@@ -41,7 +41,7 @@ class RuleAppender:
     def on_created_func(event):
         print('file created: {}'.format(event.src_path))
         with RuleAppender.observer.ignore_events():
-            RuleAppender.append_to_file(event)
+            RuleAppender.append_to_file(event.src_path)
 
     @staticmethod
     def on_modified_func(event):
@@ -51,19 +51,30 @@ class RuleAppender:
 
         print('file modified: {}, could be an automatic update'.format(event.src_path))
         with RuleAppender.observer.ignore_events():
-            RuleAppender.append_to_file(event)
+            RuleAppender.append_to_file(event.src_path)
+    
+    @staticmethod
+    def on_renamed_func(event):
+        print('file renamed: {}'.format(event.dest_path))
+        if isinstance(event, watchdog.events.FileMovedEvent):
+            with RuleAppender.observer.ignore_events():
+                RuleAppender.append_to_file(event.dest_path)
 
     @staticmethod
-    def append_to_file(event):
+    def append_to_file(path):
         # merge it with ours
         print('Updating...')
 
+        if not os.path.exists(path):
+            print('file not exist any more, maybe renamed, ignore')
+            return
+
         myconf = yaml.load(open('myconf.yml', 'r'), Loader=yaml.CLoader)
-        newconf = yaml.load(open(event.src_path, 'r'), Loader=yaml.CLoader)
+        newconf = yaml.load(open(path, 'r'), Loader=yaml.CLoader)
         newconf['Rule'] = myconf['Rule'] + newconf['Rule']
 
         if RuleAppender.is_direct_update:
-            file_to_be_update = event.src_path
+            file_to_be_update = path
         else:
             file_to_be_update = RuleAppender.target_file
 
@@ -112,6 +123,7 @@ class RuleAppender:
             regexes=['.*(?<!list\\.yml)$'])
         handler.on_created = RuleAppender.on_created_func
         handler.on_modified = RuleAppender.on_modified_func
+        handler.on_moved = RuleAppender.on_renamed_func
 
         RuleAppender.observer = PausingObserver()
         RuleAppender.observer.schedule(handler, filepath)
