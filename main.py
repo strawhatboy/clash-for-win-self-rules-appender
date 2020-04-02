@@ -1,13 +1,13 @@
 
-import watchdog.observers
-import contextlib
-import watchdog.events
 import yaml
-import os
-import sys
-import pathlib
 import argparse
+import contextlib
+import os
+import pathlib
+import sys
 import time
+import watchdog.observers
+import watchdog.events
 t_start = time.time()
 
 # copied from https://stackoverflow.com/questions/18781239/python-watchdog-is-there-a-way-to-pause-the-observer
@@ -37,11 +37,13 @@ class RuleAppender:
     target_file = ''
     is_direct_update = False
 
+    @staticmethod
     def on_created_func(event):
         print('file created: {}'.format(event.src_path))
         with RuleAppender.observer.ignore_events():
             RuleAppender.append_to_file(event)
 
+    @staticmethod
     def on_modified_func(event):
         if os.path.isdir(event.src_path):
             # ignore dir event
@@ -51,6 +53,7 @@ class RuleAppender:
         with RuleAppender.observer.ignore_events():
             RuleAppender.append_to_file(event)
 
+    @staticmethod
     def append_to_file(event):
         # merge it with ours
         print('Updating...')
@@ -70,6 +73,7 @@ class RuleAppender:
             print('Successfully updated config file {}'.format(
                 file_to_be_update))
 
+    @staticmethod
     def main(argvs):
         parser = argparse.ArgumentParser()
 
@@ -104,7 +108,8 @@ class RuleAppender:
             print('Error: "--config" should be specified if "--direct" is off')
             return
 
-        handler = watchdog.events.RegexMatchingEventHandler(regexes=['.*(?<!list\\.yml)$'])
+        handler = watchdog.events.RegexMatchingEventHandler(
+            regexes=['.*(?<!list\\.yml)$'])
         handler.on_created = RuleAppender.on_created_func
         handler.on_modified = RuleAppender.on_modified_func
 
