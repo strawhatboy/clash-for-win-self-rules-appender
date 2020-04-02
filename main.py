@@ -1,5 +1,6 @@
 
 import watchdog.observers
+import contextlib
 import watchdog.events
 import yaml
 import os
@@ -9,14 +10,48 @@ import argparse
 import time
 t_start = time.time()
 
+# copied from https://stackoverflow.com/questions/18781239/python-watchdog-is-there-a-way-to-pause-the-observer
+class PausingObserver(watchdog.observers.Observer):
+    def dispatch_events(self, *args, **kwargs):
+        if not getattr(self, '_is_paused', False):
+            super(PausingObserver, self).dispatch_events(*args, **kwargs)
+
+    def pause(self):
+        self._is_paused = True
+
+    def resume(self):
+        time.sleep(self.timeout)  # allow interim events to be queued
+        self.event_queue.queue.clear()
+        self._is_paused = False
+
+    @contextlib.contextmanager
+    def ignore_events(self):
+        self.pause()
+        yield
+        self.resume()
+
 
 class RuleAppender:
 
+    observer = None
     target_file = ''
     is_direct_update = False
 
     def on_created_func(event):
         print('file created: {}'.format(event.src_path))
+        with RuleAppender.observer.ignore_events():
+            RuleAppender.append_to_file(event)
+
+    def on_modified_func(event):
+        if os.path.isdir(event.src_path):
+            # ignore dir event
+            return
+
+        print('file modified: {}, could be an automatic update'.format(event.src_path))
+        with RuleAppender.observer.ignore_events():
+            RuleAppender.append_to_file(event)
+
+    def append_to_file(event):
         # merge it with ours
         print('Updating...')
 
@@ -69,20 +104,21 @@ class RuleAppender:
             print('Error: "--config" should be specified if "--direct" is off')
             return
 
-        handler = watchdog.events.PatternMatchingEventHandler(patterns='*.yml')
+        handler = watchdog.events.RegexMatchingEventHandler(regexes=['.*(?<!list\\.yml)$'])
         handler.on_created = RuleAppender.on_created_func
+        handler.on_modified = RuleAppender.on_modified_func
 
-        observer = watchdog.observers.Observer()
-        observer.schedule(handler, filepath)
-        observer.start()
+        RuleAppender.observer = PausingObserver()
+        RuleAppender.observer.schedule(handler, filepath)
+        RuleAppender.observer.start()
         print('Listening updates from {}...'.format(filepath))
 
         try:
             while True:
                 time.sleep(1)
         except KeyboardInterrupt:
-            observer.stop()
-            observer.join()
+            RuleAppender.observer.stop()
+            RuleAppender.observer.join()
         pass
 
 
