@@ -1,7 +1,4 @@
-# DEPRECATED
-Since clash has updated its profile format, this repo is no longer compatible. Unless you're using the legacy versions.
-
-
+# clash-for-win-self-rules-appender
 automatically append self-defined rules to a remote subscription, a workaround for [#593](https://github.com/Fndroid/clash_for_windows_pkg/issues/593)
 
 # Dependencies

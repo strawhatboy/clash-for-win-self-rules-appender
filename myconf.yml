@@ -1,4 +1,4 @@
-Rule:
+rules:
   - DOMAIN,i.imgur.com,Proxy
   - DOMAIN-SUFFIX,live.net,Proxy
   - DOMAIN-SUFFIX,leetcode.com,Proxy
