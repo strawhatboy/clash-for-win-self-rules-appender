@@ -69,9 +69,9 @@ class RuleAppender:
             print('file not exist any more, maybe renamed, ignore')
             return
 
-        myconf = yaml.load(open('myconf.yml', 'r'), Loader=yaml.CLoader)
-        newconf = yaml.load(open(path, 'r'), Loader=yaml.CLoader)
-        newconf['Rule'] = myconf['Rule'] + newconf['Rule']
+        myconf = yaml.load(open('myconf.yml', 'rb'), Loader=yaml.CLoader)
+        newconf = yaml.load(open(path, 'rb'), Loader=yaml.CLoader)
+        newconf['rules'] = myconf['rules'] + newconf['rules']
 
         if RuleAppender.is_direct_update:
             file_to_be_update = path
